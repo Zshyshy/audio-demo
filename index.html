@@ -97,6 +97,8 @@
         geometry.scale(-1, 1, 1); 
         const material = new THREE.MeshBasicMaterial({ map: videoTexture });
         const sphere = new THREE.Mesh(geometry, material);
+        // 旋转球体以匹配视频的默认方向
+        sphere.rotation.y = -Math.PI/2;
         scene.add(sphere);
 
         // 初始化控制器
@@ -129,7 +131,10 @@
 
             foaRenderer.initialize().then(function() {
                 log("Audio Active: Rotate to hear changes.");
-                
+                // 标准 ACN 是 [0, 1, 2, 3]，FuMa 是 [0, 3, 1, 2]
+                // 如果你的声音上下左右反了，或者转头时声音跳变，请尝试解开下面这行的注释：
+                // foaRenderer.setChannelMap([0, 3, 1, 2]);
+
                 audioSource = audioContext.createMediaElementSource(audioElement);
                 audioSource.connect(foaRenderer.input);
                 foaRenderer.output.connect(audioContext.destination);
